@@ -21,8 +21,6 @@ import { useTelemetryIdentity } from "#/hooks/use-telemetry-identity";
 import { LoadingSpinner } from "#/components/shared/loading-spinner";
 import { useAppTitle } from "#/hooks/use-app-title";
 import { ReactRouterNavigationProvider } from "./react-router-navigation-provider";
-import { OnboardingHost } from "#/components/features/onboarding";
-import { isOnboardingPreviewActive } from "#/components/features/onboarding/onboarding-preview";
 
 const EnvironmentSwitchOverlay = React.lazy(
   () => import("#/components/features/backends/environment-switch-overlay"),
@@ -103,8 +101,6 @@ export default function MainApp() {
   const hideMobileSidebarMenuBar = /^\/conversations\/[^/]+/.test(
     location.pathname,
   );
-  const showOnboardingPreview = isOnboardingPreviewActive(location.search);
-
   return (
     <ReactRouterNavigationProvider>
       <SidebarMobileNavProvider>
@@ -143,7 +139,6 @@ export default function MainApp() {
           <EnvironmentSwitchOverlay />
           <CommandMenu />
         </React.Suspense>
-        {showOnboardingPreview ? <OnboardingHost /> : null}
       </SidebarMobileNavProvider>
     </ReactRouterNavigationProvider>
   );
