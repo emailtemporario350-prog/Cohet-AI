@@ -18,7 +18,6 @@ import { useSyncTelemetryConsent } from "#/hooks/use-sync-telemetry-consent";
 import { useSyncAutomationTelemetryConsent } from "#/hooks/use-sync-automation-telemetry-consent";
 
 import { useTelemetryIdentity } from "#/hooks/use-telemetry-identity";
-import { LoadingSpinner } from "#/components/shared/loading-spinner";
 import { useAppTitle } from "#/hooks/use-app-title";
 import { ReactRouterNavigationProvider } from "./react-router-navigation-provider";
 
@@ -87,14 +86,6 @@ export default function MainApp() {
       i18n.changeLanguage(settings.language);
     }
   }, [settings?.language]);
-
-  if (config.isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-base">
-        <LoadingSpinner size="large" />
-      </div>
-    );
-  }
 
   // Conversation + full-screen panel routes put the mobile menu control in the
   // chat / panel header; omit the extra top row so we don't duplicate chrome.

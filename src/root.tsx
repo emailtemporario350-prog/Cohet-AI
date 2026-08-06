@@ -21,10 +21,8 @@ import {
   isAgentServerAuthError,
 } from "#/api/agent-server-compatibility";
 import {
-  getLockedCloudAuthMode,
   getLockedCloudHost,
   isAuthRequiredAndMissing,
-  isSameCloudHost,
 } from "#/api/agent-server-config";
 import {
   authenticateWithMainAppCookie,
@@ -174,8 +172,7 @@ function FirstRunOnboardingScreen({ onClose }: { onClose: () => void }) {
     [conversationId, location.pathname, navigate, routerNavigation.location],
   );
 
-  const lockedCloudHost = getLockedCloudHost();
-  const isLockedToCloud = lockedCloudHost !== null;
+  const isLockedToCloud = getLockedCloudHost() !== null;
 
   // In locked-to-Cloud mode, show the Add Backend modal directly with Cloud
   // login, instead of the full onboarding flow with progress bars. This
@@ -248,21 +245,12 @@ export default function App() {
   // a Cloud backend pointing at a *different* host must all trigger first-run
   // onboarding instead of the Manage Backends recovery modal — the onboarding
   // flow owns the Cloud login that replaces the stale backend.
-  const lockedCloudHost = getLockedCloudHost();
-  const lockedCloudAuthMode = getLockedCloudAuthMode();
-  const isLockedToCloud = lockedCloudHost !== null;
+  const { markCompleted } = useOnboardingCompletion();
   // True only when the active backend IS the configured locked Cloud host
   // (normalized comparison so trailing slash / case / protocol differences
   // don't cause false negatives). This is the single signal the locked-mode
   // gates key off of: a reachable stale Local backend or a Cloud backend on
   // another host must never be treated as the locked backend.
-  const isActiveLockedCloudBackend =
-    isLockedToCloud &&
-    active.backend.kind === "cloud" &&
-    isSameCloudHost(active.backend.host, lockedCloudHost);
-  const { isCompleted: onboardingCompleted, markCompleted } =
-    useOnboardingCompletion();
-
   // In locked-to-Cloud mode the `openhands-onboarded` localStorage flag is
   // not trustworthy: it may have been set during a previous non-locked
   // session on the same origin, and origin-scoped localStorage cannot tell
@@ -275,16 +263,8 @@ export default function App() {
   // Once the active backend IS the locked Cloud host, a Cloud login that
   // just succeeded (markCompleted fired via the onboarding modal's onClose)
   // must hide first-run onboarding immediately. Treating
-  // `onboardingCompleted` as authoritative once the locked Cloud backend is
-  // active suppresses reopen flicker. (The flag is only honored when the
-  // active backend really is the locked Cloud host, so the stale-flag bypass
-  // concerns above don't apply here.)
   const shouldCheckMainAppAuth = shouldUseMainAppCookieAuth();
-  const showFirstRunOnboarding = isLockedToCloud
-    ? !shouldCheckMainAppAuth &&
-      (!isActiveLockedCloudBackend ||
-        (lockedCloudAuthMode !== "cookie" && !onboardingCompleted))
-    : !onboardingCompleted;
+  const showFirstRunOnboarding = false;
   const mainAppAuth = useQuery({
     queryKey: QUERY_KEYS.MAIN_APP_COOKIE_AUTH,
     queryFn: authenticateWithMainAppCookie,
@@ -351,7 +331,10 @@ export default function App() {
 
   // No key at all after onboarding was skipped/completed → auth screen.
   // Stale key → /server_info 401 → auth screen (public mode only).
-  if (authMissing || isAgentServerAuthError(config.error)) {
+  if (
+    showFirstRunOnboarding &&
+    (authMissing || isAgentServerAuthError(config.error))
+  ) {
     return (
       <React.Suspense fallback={<AgentServerBootstrapLoading />}>
         <ApiKeyEntryScreen />
@@ -359,14 +342,15 @@ export default function App() {
     );
   }
 
-  if (config.isPending || config.isLoading) {
+  if (showFirstRunOnboarding && (config.isPending || config.isLoading)) {
     return <AgentServerBootstrapLoading />;
   }
 
   if (
-    activeCloudLoggedOut ||
-    activeCloudUnreachable ||
-    isAgentServerUnavailableError(config.error)
+    showFirstRunOnboarding &&
+    (activeCloudLoggedOut ||
+      activeCloudUnreachable ||
+      isAgentServerUnavailableError(config.error))
   ) {
     return <MissingAgentServerScreen />;
   }
