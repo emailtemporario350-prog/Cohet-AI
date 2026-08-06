@@ -174,7 +174,7 @@ export function Sidebar() {
           setCollapsedRailHovered(false);
         }}
         className={cn(
-          "max-md:hidden flex bg-base flex-col min-h-0 transition-[width,min-width] duration-200",
+          "max-md:hidden flex bg-base flex-col min-h-0 transition-[width,min-width,padding] duration-300 ease-out motion-reduce:transition-none",
           "md:border-r md:border-[var(--oh-border)] md:h-full",
           collapsed
             ? "md:w-[60px] md:min-w-[60px] md:px-2.5"
