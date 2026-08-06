@@ -18,11 +18,8 @@ import { useSyncTelemetryConsent } from "#/hooks/use-sync-telemetry-consent";
 import { useSyncAutomationTelemetryConsent } from "#/hooks/use-sync-automation-telemetry-consent";
 
 import { useTelemetryIdentity } from "#/hooks/use-telemetry-identity";
-import { LoadingSpinner } from "#/components/shared/loading-spinner";
 import { useAppTitle } from "#/hooks/use-app-title";
 import { ReactRouterNavigationProvider } from "./react-router-navigation-provider";
-import { OnboardingHost } from "#/components/features/onboarding";
-import { isOnboardingPreviewActive } from "#/components/features/onboarding/onboarding-preview";
 
 const EnvironmentSwitchOverlay = React.lazy(
   () => import("#/components/features/backends/environment-switch-overlay"),
@@ -90,21 +87,11 @@ export default function MainApp() {
     }
   }, [settings?.language]);
 
-  if (config.isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-base">
-        <LoadingSpinner size="large" />
-      </div>
-    );
-  }
-
   // Conversation + full-screen panel routes put the mobile menu control in the
   // chat / panel header; omit the extra top row so we don't duplicate chrome.
   const hideMobileSidebarMenuBar = /^\/conversations\/[^/]+/.test(
     location.pathname,
   );
-  const showOnboardingPreview = isOnboardingPreviewActive(location.search);
-
   return (
     <ReactRouterNavigationProvider>
       <SidebarMobileNavProvider>
@@ -143,7 +130,6 @@ export default function MainApp() {
           <EnvironmentSwitchOverlay />
           <CommandMenu />
         </React.Suspense>
-        {showOnboardingPreview ? <OnboardingHost /> : null}
       </SidebarMobileNavProvider>
     </ReactRouterNavigationProvider>
   );

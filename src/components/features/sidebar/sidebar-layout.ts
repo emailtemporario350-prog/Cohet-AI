@@ -1,8 +1,8 @@
 import { cn } from "#/utils/utils";
 
-/** Nav rows and side nav links — hover color/background snap instantly (no fade). */
+/** Shared motion for navigation rows and sidebar controls. */
 export const navInteractiveTransitionClassName =
-  "transition-none motion-reduce:transition-none";
+  "transition-[background-color,color,transform] duration-150 ease-out motion-reduce:transition-none";
 
 /** Expanded sidebar icon column beside labels (matches 36px nav rows). */
 export const SIDEBAR_ICON_SLOT_CLASS =
@@ -17,7 +17,7 @@ export const SIDEBAR_HEADER_ROW_CLASS =
 
 export function sidebarHeaderRowClassName(collapsed: boolean): string {
   return cn(
-    "flex h-10 min-h-10 shrink-0 items-center w-full",
+    "flex h-10 min-h-10 shrink-0 items-center w-full transition-[padding,gap] duration-200 ease-out motion-reduce:transition-none",
     collapsed ? "px-0" : "gap-2 pl-2.5 pr-2.5",
   );
 }
@@ -29,8 +29,9 @@ export const SIDEBAR_ROW_INTERACTIVE_CLASS = {
 
 export function sidebarNavListClassName(collapsed: boolean): string {
   return cn(
-    "flex flex-col gap-0.5 w-full shrink-0 items-stretch",
+    "flex flex-col gap-0.5 w-full shrink-0 items-stretch transition-[opacity,transform] duration-200 ease-out motion-reduce:transition-none",
     !collapsed && "pr-2.5",
+    collapsed ? "scale-[0.98]" : "scale-100",
   );
 }
 
@@ -76,7 +77,7 @@ export function sidebarNavLabelClassName(collapsed: boolean): string {
   if (collapsed) {
     return "sr-only";
   }
-  return "min-w-0 truncate";
+  return "min-w-0 truncate transition-opacity duration-200 ease-out motion-reduce:transition-none";
 }
 
 export const SIDEBAR_ICON_BUTTON_CLASS = cn(
