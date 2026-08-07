@@ -15,7 +15,7 @@ import { useActiveBackend } from "#/contexts/active-backend-context";
 import { useAgentProfiles } from "#/hooks/query/use-agent-profiles";
 import { useChatInputModelState } from "#/hooks/use-chat-input-model-state";
 
-const MODELS = ["Lite", "Standard", "Turbo"];
+const MODELS = ["Lite", "Swarm", "Normal", "Max", "Ultra"];
 const voiceInputLabel = "Voice input";
 
 interface ChatInputActionsProps {
@@ -96,7 +96,7 @@ export function ChatInputActions({
         <ChatAddFileButton
           disabled={disabled}
           handleFileIconClick={onAddFileClick}
-          className="flex size-7 items-center justify-center rounded-full border-0 bg-transparent p-0 text-[#949494] transition-colors hover:bg-[#202020] hover:text-[#f2f2f2]"
+          className="flex size-8 items-center justify-center rounded-full border-0 bg-transparent p-0 text-[#949494] transition-colors hover:bg-[#202020] hover:text-[#f2f2f2]"
           showAgentProfileSwitch={showAgentProfileSwitch}
         />
 
@@ -114,7 +114,7 @@ export function ChatInputActions({
           </button>
 
           {modelOpen && (
-            <div className="absolute bottom-[calc(100%+8px)] left-0 z-20 min-w-[140px] rounded-[10px] border border-white/[0.12] bg-[#181818] p-1 shadow-[0_12px_30px_-8px_rgba(0,0,0,0.7)]">
+            <div className="absolute bottom-[calc(100%+8px)] left-0 z-20 min-w-[140px] rounded-[10px] border border-white/[0.12] bg-[#161616]/85 p-1 shadow-[0_12px_30px_-8px_rgba(0,0,0,0.8)] backdrop-blur-xl">
               {MODELS.map((option) => (
                 <button
                   key={option}

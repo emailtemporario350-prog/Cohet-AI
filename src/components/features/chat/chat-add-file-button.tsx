@@ -1,5 +1,13 @@
 import React from "react";
-import { Paperclip, Plus } from "lucide-react";
+import {
+  BookOpen,
+  FileCode2,
+  FolderGit2,
+  KeyRound,
+  Paperclip,
+  Plus,
+  Users,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { I18nKey } from "#/i18n/declaration";
 import { cn } from "#/utils/utils";
@@ -68,6 +76,34 @@ export function ChatAddFileButton({
     setMenuOpen((open) => !open);
   };
 
+  const customActions = [
+    {
+      testId: "repositories-menu-button",
+      icon: <FolderGit2 className="size-4" aria-hidden />,
+      label: "Repositories",
+    },
+    {
+      testId: "codebase-files-menu-button",
+      icon: <FileCode2 className="size-4" aria-hidden />,
+      label: "Codebase files",
+    },
+    {
+      testId: "devin-sessions-menu-button",
+      icon: <Users className="size-4" aria-hidden />,
+      label: "Devin sessions",
+    },
+    {
+      testId: "playbooks-menu-button",
+      icon: <BookOpen className="size-4" aria-hidden />,
+      label: "Playbooks",
+    },
+    {
+      testId: "secrets-menu-button",
+      icon: <KeyRound className="size-4" aria-hidden />,
+      label: "Secrets",
+    },
+  ];
+
   return (
     <div className="relative">
       <button
@@ -88,7 +124,7 @@ export function ChatAddFileButton({
         disabled={disabled}
       >
         <span className="flex h-full w-full items-center justify-center">
-          <Plus className="h-[13px] w-[13px] shrink-0" strokeWidth={2} />
+          <Plus className="h-5 w-5 shrink-0" strokeWidth={1.25} />
         </span>
       </button>
 
@@ -103,6 +139,10 @@ export function ChatAddFileButton({
           shouldShowAgentTools={shouldShowAgentTools}
           shouldShowHooks={shouldShowHooks}
           shouldShowPlugins={shouldShowPlugins}
+          customActions={customActions.map((action) => ({
+            ...action,
+            onClick: () => setMenuOpen(false),
+          }))}
           footerAction={{
             testId: "add-files-and-images-button",
             icon: (
@@ -112,7 +152,7 @@ export function ChatAddFileButton({
                 aria-hidden
               />
             ),
-            label: t(I18nKey.CHAT_INTERFACE$ADD_FILES_AND_IMAGES),
+            label: "Upload attachment",
             onClick: handleFileIconClick,
           }}
         />

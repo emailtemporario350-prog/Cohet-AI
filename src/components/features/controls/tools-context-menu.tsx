@@ -46,6 +46,12 @@ interface ToolsContextMenuProps {
     label: string;
     onClick: () => void;
   };
+  customActions?: Array<{
+    testId: string;
+    icon: React.ReactNode;
+    label: string;
+    onClick: () => void;
+  }>;
 }
 
 export function ToolsContextMenu({
@@ -59,6 +65,7 @@ export function ToolsContextMenu({
   shouldShowPlugins = false,
   showAgentProfileSwitch = false,
   footerAction,
+  customActions = [],
 }: ToolsContextMenuProps) {
   const { t } = useTranslation("openhands");
   const { data: conversation } = useActiveConversation();
@@ -93,7 +100,7 @@ export function ToolsContextMenu({
       testId="tools-context-menu"
       position="top"
       alignment="left"
-      className="left-[-16px] mb-2 bottom-full overflow-visible min-w-[200px]"
+      className="left-[-16px] bottom-full mb-2 min-w-[220px] overflow-visible border-white/[0.1] bg-[#141414]/90 shadow-[0_18px_50px_-16px_rgba(0,0,0,0.85)] backdrop-blur-xl"
     >
       {/* Switch agent profile — only while starting a new conversation; the
           profile is locked once the conversation starts (OSS-5735). Selecting
@@ -198,6 +205,17 @@ export function ToolsContextMenu({
           </div>
         )}
       </div>
+
+      {customActions.length > 0 && <Divider inset="menu" />}
+      {customActions.map((action) => (
+        <ContextMenuListItem
+          key={action.testId}
+          testId={action.testId}
+          onClick={action.onClick}
+        >
+          <ToolsContextMenuIconText icon={action.icon} text={action.label} />
+        </ContextMenuListItem>
+      ))}
 
       {shouldShowAgentTools && <Divider inset="menu" />}
 
