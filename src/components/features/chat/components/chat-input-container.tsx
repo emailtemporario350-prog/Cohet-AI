@@ -72,53 +72,62 @@ export function ChatInputContainer({
 
   return (
     <>
-      <div
-        ref={chatContainerRef}
-        className={cn(
-          "chat-input-reference relative box-border flex min-h-[15vh] w-full flex-col items-start justify-between overflow-visible rounded-[20px] border border-white/[0.07] bg-[#1f1f1f] p-[14px_14px_10px] shadow-[0_16px_40px_-18px_rgba(0,0,0,0.7)] md:min-h-0",
-          conversationMode === "plan" && "border-[#597FF4]",
-        )}
-        onDragOver={(e) => onDragOver(e, disabled)}
-        onDragLeave={(e) => onDragLeave(e, disabled)}
-        onDrop={(e) => onDrop(e, disabled)}
-      >
-        {/* Drag Over UI */}
-        {isDragOver && <DragOver />}
+      <div className="relative w-full">
+        <img
+          src="/cohet-mascot.png"
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-full right-2 z-10 h-16 w-16 object-contain md:right-4 md:h-20 md:w-20"
+        />
 
-        <UploadedFiles />
-
-        {/* Wrapper so the slash menu anchors just above the input row,
-          not above the entire (possibly resized) container */}
-        <div className="relative w-full p-0">
-          {isSlashMenuOpen && onSlashSelect && (
-            <SlashCommandMenu
-              items={slashItems}
-              selectedIndex={slashSelectedIndex}
-              onSelect={onSlashSelect}
-            />
+        <div
+          ref={chatContainerRef}
+          className={cn(
+            "chat-input-reference relative box-border flex min-h-[15vh] w-full flex-col items-start justify-between overflow-visible rounded-[20px] border border-white/[0.07] bg-[#1f1f1f] p-[14px_14px_10px] shadow-[0_16px_40px_-18px_rgba(0,0,0,0.7)] md:min-h-0",
+            conversationMode === "plan" && "border-[#597FF4]",
           )}
+          onDragOver={(e) => onDragOver(e, disabled)}
+          onDragLeave={(e) => onDragLeave(e, disabled)}
+          onDrop={(e) => onDrop(e, disabled)}
+        >
+          {/* Drag Over UI */}
+          {isDragOver && <DragOver />}
 
-          <ChatInputRow
-            chatInputRef={chatInputRef}
-            isNewConversationPending={isNewConversationPending}
-            placeholder={placeholder}
-            onInput={onInput}
-            onPaste={onPaste}
-            onKeyDown={onKeyDown}
-            onFocus={onFocus}
-            onBlur={onBlur}
+          <UploadedFiles />
+
+          {/* Wrapper so the slash menu anchors just above the input row,
+            not above the entire (possibly resized) container */}
+          <div className="relative w-full p-0">
+            {isSlashMenuOpen && onSlashSelect && (
+              <SlashCommandMenu
+                items={slashItems}
+                selectedIndex={slashSelectedIndex}
+                onSelect={onSlashSelect}
+              />
+            )}
+
+            <ChatInputRow
+              chatInputRef={chatInputRef}
+              isNewConversationPending={isNewConversationPending}
+              placeholder={placeholder}
+              onInput={onInput}
+              onPaste={onPaste}
+              onKeyDown={onKeyDown}
+              onFocus={onFocus}
+              onBlur={onBlur}
+            />
+          </div>
+
+          <ChatInputActions
+            disabled={disabled}
+            canSubmit={canSubmit}
+            hasStartedConversation={hasStartedConversation}
+            onAddFileClick={() => handleFileIconClick(disabled)}
+            showButton={showButton}
+            buttonClassName={buttonClassName}
+            handleSubmit={handleSubmit}
           />
         </div>
-
-        <ChatInputActions
-          disabled={disabled}
-          canSubmit={canSubmit}
-          hasStartedConversation={hasStartedConversation}
-          onAddFileClick={() => handleFileIconClick(disabled)}
-          showButton={showButton}
-          buttonClassName={buttonClassName}
-          handleSubmit={handleSubmit}
-        />
       </div>
 
       <div className="mt-3 flex w-full justify-center">
