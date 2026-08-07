@@ -100,7 +100,7 @@ export function ToolsContextMenu({
       testId="tools-context-menu"
       position="top"
       alignment="left"
-      className="left-[-8px] bottom-full mb-2 min-w-[170px] overflow-visible border-white/[0.1] bg-[#141414]/90 p-0 text-[10px] shadow-[0_18px_50px_-16px_rgba(0,0,0,0.85)] backdrop-blur-xl [&>button]:gap-1 [&>button]:px-1 [&>button]:py-0.5 [&>button]:text-[10px] [&>button]:leading-3 [&_.text-sm]:text-[10px] [&_.text-sm]:leading-3 [&_svg]:size-2.5"
+      className="left-[-10px] bottom-full mb-2 min-w-[185px] overflow-visible border-white/[0.1] bg-[#141414]/90 p-0.5 text-[11px] shadow-[0_18px_50px_-16px_rgba(0,0,0,0.85)] backdrop-blur-xl [&>button]:gap-1.5 [&>button]:px-1.5 [&>button]:py-1 [&>button]:text-[11px] [&>button]:leading-4 [&_.text-sm]:text-[11px] [&_.text-sm]:leading-4 [&_svg]:size-3"
     >
       {/* Switch agent profile — only while starting a new conversation; the
           profile is locked once the conversation starts (OSS-5735). Selecting
