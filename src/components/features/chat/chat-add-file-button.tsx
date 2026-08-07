@@ -123,7 +123,7 @@ export function ChatAddFileButton({
         disabled={disabled}
       >
         <span className="flex h-full w-full items-center justify-center">
-          <Plus className="h-5 w-5 shrink-0" strokeWidth={1.25} />
+          <Plus className="h-[21px] w-[21px] shrink-0" strokeWidth={1.1} />
         </span>
       </button>
 

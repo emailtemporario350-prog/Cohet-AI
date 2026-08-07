@@ -40,7 +40,7 @@ function OperatingSystemIcon({ name }: { name: OperatingSystem }) {
       src={OPERATING_SYSTEM_LOGOS[name]}
       alt=""
       aria-hidden="true"
-      className="size-3 object-contain brightness-0 invert"
+      className="size-3.5 object-contain"
     />
   );
 }

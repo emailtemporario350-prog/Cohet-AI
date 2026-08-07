@@ -110,7 +110,7 @@ export function ChatInputActions({
             disabled={disabled}
           >
             {model}
-            <ChevronDown size={13} strokeWidth={1.5} />
+            <ChevronDown size={14} strokeWidth={1.25} />
           </button>
 
           {modelOpen && (
@@ -150,7 +150,7 @@ export function ChatInputActions({
           className="flex size-7 items-center justify-center rounded-full border-0 bg-transparent p-0 text-[#949494] transition-colors hover:bg-[#202020] hover:text-[#f2f2f2]"
           aria-label={voiceInputLabel}
         >
-          <Mic size={19} strokeWidth={1.5} />
+          <Mic size={20} strokeWidth={1.25} />
         </button>
         {showButton && (
           <ChatSendButton
