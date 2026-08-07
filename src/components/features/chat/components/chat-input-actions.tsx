@@ -439,13 +439,13 @@ export function ChatInputActions({
           <ChatAddFileButton
             disabled={disabled}
             handleFileIconClick={onAddFileClick}
-            className="flex size-9 items-center justify-center rounded-full border border-input bg-background p-0 text-foreground transition-colors hover:bg-accent"
+            className="flex size-9 items-center justify-center rounded-full border border-gray-200 bg-background p-0 text-foreground transition-colors hover:bg-accent dark:border-[#2a2a2a]"
             showAgentProfileSwitch={showAgentProfileSwitch}
           />
         </div>
         <button
           type="button"
-          className="inline-flex h-9 items-center gap-2 rounded-full border border-input bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+          className="inline-flex h-9 items-center gap-2 rounded-full border border-gray-200 bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-accent dark:border-[#2a2a2a]"
         >
           <Globe className="size-[18px]" />
           <span>{searchLabel}</span>
@@ -454,7 +454,7 @@ export function ChatInputActions({
           <button
             ref={overflowTriggerRef}
             type="button"
-            className="flex size-9 items-center justify-center rounded-full border border-input bg-background text-foreground transition-colors hover:bg-accent"
+            className="flex size-9 items-center justify-center rounded-full border border-gray-200 bg-background text-foreground transition-colors hover:bg-accent dark:border-[#2a2a2a]"
             aria-label={t(I18nKey.CHAT_INTERFACE$MORE_INPUT_ACTIONS)}
             aria-expanded={isOverflowOpen}
             aria-haspopup="menu"
@@ -489,7 +489,7 @@ export function ChatInputActions({
         )}
         <button
           type="button"
-          className="flex size-9 items-center justify-center rounded-full border border-input bg-background text-foreground transition-colors hover:bg-accent"
+          className="flex size-9 items-center justify-center rounded-full border border-gray-200 bg-background text-foreground transition-colors hover:bg-accent dark:border-[#2a2a2a]"
           aria-label={voiceInputLabel}
         >
           <Mic className="size-[18px]" />

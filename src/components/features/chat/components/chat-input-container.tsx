@@ -67,7 +67,7 @@ export function ChatInputContainer({
     <div
       ref={chatContainerRef}
       className={cn(
-        "chat-input-reference relative box-border flex w-full flex-col items-start justify-center overflow-hidden rounded-3xl border border-input bg-popover p-0 pt-1 shadow-xs",
+        "chat-input-reference relative box-border flex w-full flex-col items-start justify-center overflow-hidden rounded-3xl border border-gray-200 bg-popover p-0 pt-1 shadow-xs dark:border-[#2a2a2a]",
         conversationMode === "plan" && "border-[#597FF4]",
       )}
       onDragOver={(e) => onDragOver(e, disabled)}

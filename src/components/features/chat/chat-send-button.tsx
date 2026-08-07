@@ -16,7 +16,7 @@ export function ChatSendButton({
     <button
       type="button"
       className={cn(
-        "flex size-9 items-center justify-center rounded-full border-0 bg-primary p-2 text-primary-foreground transition-colors hover:bg-primary/90",
+        "flex size-9 items-center justify-center rounded-full border-0 bg-white p-2 text-gray-900 transition-colors hover:bg-gray-200 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200",
         disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
         buttonClassName,
       )}
