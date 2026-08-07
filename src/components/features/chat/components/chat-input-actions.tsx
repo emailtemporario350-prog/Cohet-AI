@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
-import { Cpu } from "lucide-react";
+import { ChevronDown, Cpu, Folder, GitBranch } from "lucide-react";
 import { AgentStatus } from "#/components/features/controls/agent-status";
 import { ChangeAgentButton } from "../change-agent-button";
 import { ChatInputModel, ChatInputModelMenuContent } from "./chat-input-model";
@@ -59,6 +59,7 @@ export function ChatInputActions({
   handleSubmit = () => {},
 }: ChatInputActionsProps) {
   const { t } = useTranslation("openhands");
+  const currentBranch = "main";
   const unifiedPauseMutation = useUnifiedPauseConversation();
   const pauseConversationMutation = usePauseConversation();
   const resumeConversationMutation = useResumeConversation();
@@ -426,7 +427,7 @@ export function ChatInputActions({
   return (
     <div
       ref={actionsRowRef}
-      className="w-full min-w-0 flex items-center justify-between gap-2"
+      className="w-full min-w-0 flex items-center justify-between gap-2 border-t border-[#dedede] bg-[#ededed] px-5 py-3 text-[#202124]"
     >
       <div className="flex min-w-0 items-center gap-1">
         <div className="flex min-w-0 items-center gap-3">
@@ -451,6 +452,26 @@ export function ChatInputActions({
               <ChatInputLlmProfilePicker />
             )}
           </div>
+          <button
+            type="button"
+            className="inline-flex h-6 items-center gap-1 rounded-md px-1.5 text-sm leading-5 text-[#202124] transition-colors hover:bg-black/5"
+            aria-label={t(I18nKey.COMMON$WORKSPACE_MODE_NEW_WORKTREE)}
+          >
+            <Folder className="size-4 text-[#5f6368]" strokeWidth={1.8} />
+            <span className="whitespace-nowrap">
+              {t(I18nKey.COMMON$WORKSPACE_MODE_NEW_WORKTREE)}
+            </span>
+            <ChevronDown className="size-3.5 text-[#5f6368]" strokeWidth={2} />
+          </button>
+          <button
+            type="button"
+            className="inline-flex h-6 items-center gap-1 rounded-md px-1.5 text-sm leading-5 text-[#202124] transition-colors hover:bg-black/5"
+            aria-label={`${t(I18nKey.CONVERSATION$BRANCH)}: ${currentBranch}`}
+          >
+            <GitBranch className="size-4 text-[#5f6368]" strokeWidth={1.8} />
+            <span>{currentBranch}</span>
+            <ChevronDown className="size-3.5 text-[#5f6368]" strokeWidth={2} />
+          </button>
 
           {hasOverflowItems && (
             <div className="relative shrink-0">

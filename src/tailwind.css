@@ -326,6 +326,12 @@ button.extension-module-card-interactive {
   line-height: 20px;
 }
 
+.chat-input-reference-field:empty:before {
+  color: #6b6b6b;
+  font-size: 16px;
+  line-height: 20px;
+}
+
 .chat-input:focus {
   outline: none;
 }
