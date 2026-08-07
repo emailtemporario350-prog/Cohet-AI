@@ -12,7 +12,10 @@ export function HomeHeaderTitle() {
         alt={brandLogoAlt}
         className="size-14 object-contain"
       />
-      <span className="text-5xl font-semibold tracking-[-0.04em]">
+      <span
+        className="text-5xl font-normal tracking-[-0.02em]"
+        style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
+      >
         {brandName}
       </span>
     </div>

@@ -226,7 +226,7 @@ export function HomeChatLauncher() {
           <HomeHeaderTitle />
         </div>
 
-        <div className="w-full">
+        <div className="w-[91vw] max-w-[620px]">
           <CustomChatInput
             onSubmit={handleSubmitWithModelGuard}
             onFilesPaste={handleUpload}
