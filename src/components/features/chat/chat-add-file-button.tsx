@@ -1,12 +1,11 @@
 import React from "react";
 import {
-  BookOpen,
   FileCode2,
   FolderGit2,
   KeyRound,
   Paperclip,
   Plus,
-  Users,
+  Workflow,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { I18nKey } from "#/i18n/declaration";
@@ -78,29 +77,24 @@ export function ChatAddFileButton({
 
   const customActions = [
     {
-      testId: "repositories-menu-button",
+      testId: "workspace-browser-menu-button",
       icon: <FolderGit2 className="size-3.5" aria-hidden />,
-      label: "Repositories",
+      label: "Workspace browser",
     },
     {
-      testId: "codebase-files-menu-button",
+      testId: "project-files-menu-button",
       icon: <FileCode2 className="size-3.5" aria-hidden />,
-      label: "Codebase files",
+      label: "Project files",
     },
     {
-      testId: "devin-sessions-menu-button",
-      icon: <Users className="size-3.5" aria-hidden />,
-      label: "Devin sessions",
+      testId: "automation-recipes-menu-button",
+      icon: <Workflow className="size-3.5" aria-hidden />,
+      label: "Automation recipes",
     },
     {
-      testId: "playbooks-menu-button",
-      icon: <BookOpen className="size-3.5" aria-hidden />,
-      label: "Playbooks",
-    },
-    {
-      testId: "secrets-menu-button",
+      testId: "environment-variables-menu-button",
       icon: <KeyRound className="size-3.5" aria-hidden />,
-      label: "Secrets",
+      label: "Environment variables",
     },
   ];
 

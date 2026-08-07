@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Check, ChevronDown, Mic } from "lucide-react";
+import { Check, ChevronDown, CircleDot, Mic, Monitor } from "lucide-react";
 import { AgentStatus } from "#/components/features/controls/agent-status";
 import { ChangeAgentButton } from "../change-agent-button";
 import { ChatInputModel } from "./chat-input-model";
@@ -16,7 +16,25 @@ import { useAgentProfiles } from "#/hooks/query/use-agent-profiles";
 import { useChatInputModelState } from "#/hooks/use-chat-input-model-state";
 
 const MODELS = ["Lite", "Swarm", "Normal", "Max", "Ultra"];
+const OPERATING_SYSTEMS = ["Ubuntu", "Windows 11", "Debian"] as const;
 const voiceInputLabel = "Voice input";
+const operatingSystemLabel = "Operating system";
+
+function OperatingSystemIcon({
+  name,
+}: {
+  name: (typeof OPERATING_SYSTEMS)[number];
+}) {
+  if (name === "Ubuntu") {
+    return <CircleDot className="size-3.5 text-[#e95420]" strokeWidth={1.5} />;
+  }
+
+  if (name === "Windows 11") {
+    return <Monitor className="size-3.5 text-[#4aa3ff]" strokeWidth={1.5} />;
+  }
+
+  return <CircleDot className="size-3.5 text-[#d54b8c]" strokeWidth={1.5} />;
+}
 
 interface ChatInputActionsProps {
   disabled: boolean;
@@ -45,7 +63,11 @@ export function ChatInputActions({
   const modelState = useChatInputModelState();
   const [model, setModel] = useState("Lite");
   const [modelOpen, setModelOpen] = useState(false);
+  const [operatingSystem, setOperatingSystem] =
+    useState<(typeof OPERATING_SYSTEMS)[number]>("Ubuntu");
+  const [operatingSystemOpen, setOperatingSystemOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const operatingSystemRef = useRef<HTMLDivElement>(null);
   const isPreStart = !conversationId || hasStartedConversation === false;
   const agentProfilesForStart = useAgentProfiles({ enabled: isPreStart });
   const showAgentProfileSwitch =
@@ -65,6 +87,12 @@ export function ChatInputActions({
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setModelOpen(false);
+      }
+      if (
+        operatingSystemRef.current &&
+        !operatingSystemRef.current.contains(event.target as Node)
+      ) {
+        setOperatingSystemOpen(false);
       }
     };
 
@@ -128,6 +156,46 @@ export function ChatInputActions({
                   {option}
                   {model === option && (
                     <Check size={12} className="text-[#FA7D4B]" />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div ref={operatingSystemRef} className="relative">
+          <button
+            type="button"
+            className="flex items-center gap-1 rounded-md border-0 bg-transparent px-1.5 py-1 text-[11px] font-medium text-[#949494] outline-none transition-colors hover:bg-[#202020] hover:text-[#f2f2f2]"
+            aria-label={operatingSystemLabel}
+            aria-expanded={operatingSystemOpen}
+            aria-haspopup="menu"
+            onClick={() => setOperatingSystemOpen((open) => !open)}
+            disabled={disabled}
+          >
+            <OperatingSystemIcon name={operatingSystem} />
+            {operatingSystem}
+            <ChevronDown size={12} strokeWidth={1.5} />
+          </button>
+
+          {operatingSystemOpen && (
+            <div className="absolute bottom-[calc(100%+8px)] left-0 z-20 min-w-[142px] rounded-[10px] border border-white/[0.12] bg-[#161616]/85 p-1 shadow-[0_12px_30px_-8px_rgba(0,0,0,0.8)] backdrop-blur-xl">
+              {OPERATING_SYSTEMS.map((option) => (
+                <button
+                  key={option}
+                  type="button"
+                  className="flex w-full items-center justify-between gap-2 rounded-md border-0 bg-transparent px-2 py-1.5 text-left text-[11px] text-[#f2f2f2] transition-colors hover:bg-[#232323]"
+                  onClick={() => {
+                    setOperatingSystem(option);
+                    setOperatingSystemOpen(false);
+                  }}
+                >
+                  <span className="flex items-center gap-1.5">
+                    <OperatingSystemIcon name={option} />
+                    {option}
+                  </span>
+                  {operatingSystem === option && (
+                    <Check size={11} className="text-[#FA7D4B]" />
                   )}
                 </button>
               ))}
