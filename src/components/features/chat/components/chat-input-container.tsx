@@ -77,7 +77,7 @@ export function ChatInputContainer({
           src="/cohet-mascot.png"
           alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-full right-2 z-10 h-16 w-16 object-contain md:right-4 md:h-20 md:w-20"
+          className="pointer-events-none absolute bottom-full right-2 z-10 h-24 w-24 object-contain md:right-4 md:h-28 md:w-28"
         />
 
         <div
