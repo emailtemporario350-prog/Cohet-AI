@@ -75,7 +75,7 @@ export function ChatInputContainer({
       <div
         ref={chatContainerRef}
         className={cn(
-          "chat-input-reference relative box-border flex min-h-[15vh] w-full flex-col items-start justify-between overflow-hidden rounded-[20px] border border-white/[0.07] bg-[#1f1f1f] p-[14px_14px_10px] shadow-[0_16px_40px_-18px_rgba(0,0,0,0.7)] md:min-h-0",
+          "chat-input-reference relative box-border flex min-h-[15vh] w-full flex-col items-start justify-between overflow-visible rounded-[20px] border border-white/[0.07] bg-[#1f1f1f] p-[14px_14px_10px] shadow-[0_16px_40px_-18px_rgba(0,0,0,0.7)] md:min-h-0",
           conversationMode === "plan" && "border-[#597FF4]",
         )}
         onDragOver={(e) => onDragOver(e, disabled)}
