@@ -8,6 +8,7 @@ import { cn } from "#/utils/utils";
 interface ChatInputFieldProps {
   chatInputRef: React.RefObject<HTMLDivElement | null>;
   disabled?: boolean;
+  placeholder?: string;
   onInput: () => void;
   onPaste: (e: React.ClipboardEvent) => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
@@ -18,6 +19,7 @@ interface ChatInputFieldProps {
 export function ChatInputField({
   chatInputRef,
   disabled = false,
+  placeholder,
   onInput,
   onPaste,
   onKeyDown,
@@ -49,14 +51,15 @@ export function ChatInputField({
         <div
           ref={chatInputRef}
           className={cn(
-            "chat-input chat-input-reference-field block min-h-[44px] max-h-[240px] w-full resize-none whitespace-pre-wrap bg-transparent px-4 pt-3 text-base font-normal leading-[1.3] text-primary outline-none [text-overflow:inherit] [text-wrap-mode:inherit] [white-space-collapse:inherit] custom-scrollbar",
+            "chat-input chat-input-reference-field block min-h-6 max-h-[200px] w-full resize-none whitespace-pre-wrap bg-transparent px-0 pt-0 text-[14.5px] font-normal leading-[1.5] text-[#f2f2f2] outline-none [text-overflow:inherit] [text-wrap-mode:inherit] [white-space-collapse:inherit] custom-scrollbar",
             disabled && "cursor-not-allowed opacity-50",
           )}
           contentEditable={!disabled}
           data-placeholder={
-            isPlanMode
+            placeholder ??
+            (isPlanMode
               ? t(I18nKey.COMMON$LET_S_WORK_ON_A_PLAN)
-              : t(I18nKey.SUGGESTIONS$WHAT_TO_BUILD)
+              : t(I18nKey.SUGGESTIONS$WHAT_TO_BUILD))
           }
           data-testid="chat-input"
           onInput={onInput}

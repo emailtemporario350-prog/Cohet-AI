@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { CustomChatInput } from "#/components/features/chat/custom-chat-input";
 import { useActiveBackend } from "#/contexts/active-backend-context";
 import { useCreateConversation } from "#/hooks/mutation/use-create-conversation";
-import { useLocalWorkspaces } from "#/hooks/query/use-local-workspaces";
 import { useModelInterceptor } from "#/hooks/chat/use-model-interceptor";
 import { useLlmConfigured } from "#/hooks/use-llm-configured";
 import { HOME_PROMPT_DRAFT_KEY } from "#/hooks/chat/use-draft-persistence";
@@ -17,24 +16,19 @@ import { sendMessageWithAttachments } from "#/utils/send-message-with-attachment
 import { useNavigation } from "#/context/navigation-context";
 import { useIsCreatingConversation } from "#/hooks/use-is-creating-conversation";
 import { Branch, GitRepository } from "#/types/git";
-import { Provider } from "#/types/settings";
 import { LocalWorkspace } from "#/types/workspace";
 import { I18nKey } from "#/i18n/declaration";
 import {
   displayErrorToast,
   TOAST_OPTIONS,
 } from "#/utils/custom-toast-handlers";
-import { getWorkspacesUnsupportedMessage } from "#/utils/workspaces-compatibility";
 import type { PluginSpec } from "#/api/conversation-service/agent-server-conversation-service.types";
 import { PluginPickerModal } from "#/components/features/plugins/plugin-picker-modal";
-import { PluginPickerTrigger } from "#/components/features/plugins/plugin-picker-trigger";
 import { PinnedAutomationsDashboard } from "./featured-automations/pinned-automations-dashboard";
 import { RunningAutomationsList } from "./featured-automations/running-automations-list";
 import { HomeHeaderTitle } from "./home-header/home-header-title";
-import { OpenLauncherButton } from "./open-launcher-button";
 import { OpenWorkspaceDialog } from "./open-workspace-dialog";
 import { OpenRepositoryDialog } from "./open-repository-dialog";
-import { HomeGitControlBarPreview } from "./home-git-control-bar-preview";
 
 export function HomeChatLauncher() {
   const { t } = useTranslation("openhands");
@@ -48,7 +42,6 @@ export function HomeChatLauncher() {
   const [pendingRepository, setPendingRepository] =
     useState<GitRepository | null>(null);
   const [pendingBranch, setPendingBranch] = useState<Branch | null>(null);
-  const [pendingProvider, setPendingProvider] = useState<Provider | null>(null);
   const [workspaceMode, setWorkspaceMode] =
     useState<WorkspaceMode>("local_repo");
   const [selectedPlugins, setSelectedPlugins] = useState<PluginSpec[]>([]);
@@ -66,14 +59,6 @@ export function HomeChatLauncher() {
   const { images, files, imagesMarkedUploadAsFile, clearAllFiles } =
     useConversationStore();
   const { handleUpload } = useChatAttachmentUpload();
-  const { error: workspacesError } = useLocalWorkspaces({ enabled: isLocal });
-  const workspacesUnsupportedMessage = isLocal
-    ? getWorkspacesUnsupportedMessage(workspacesError, t)
-    : null;
-
-  const hasSelection = isLocal
-    ? !!pendingWorkspace
-    : !!pendingRepository && !!pendingBranch;
 
   const handleSubmit = (message: string) => {
     const trimmed = message.trim();
@@ -221,7 +206,7 @@ export function HomeChatLauncher() {
       data-testid="home-chat-launcher"
       className="flex w-full flex-col items-center pt-[max(4rem,28vh)] pb-10"
     >
-      <div className="flex w-full max-w-[800px] flex-col gap-4 md:px-4">
+      <div className="flex w-full max-w-[620px] flex-col gap-4 md:px-4">
         <div className="flex w-full justify-center">
           <HomeHeaderTitle />
         </div>
@@ -231,33 +216,6 @@ export function HomeChatLauncher() {
             onSubmit={handleSubmitWithModelGuard}
             onFilesPaste={handleUpload}
             disabled={isCreating || llmBlocked}
-          />
-        </div>
-
-        <div className="flex items-center justify-start gap-2">
-          {hasSelection ? (
-            <HomeGitControlBarPreview
-              workspace={pendingWorkspace}
-              repository={pendingRepository}
-              branch={pendingBranch}
-              provider={pendingProvider}
-              workspaceMode={workspaceMode}
-              backendKind={backend.kind}
-              onRepoClick={() => setIsDialogOpen(true)}
-              onWorkspaceModeChange={setWorkspaceMode}
-            />
-          ) : (
-            <OpenLauncherButton
-              kind={isLocal ? "local" : "cloud"}
-              onClick={() => setIsDialogOpen(true)}
-              disabled={isCreating || Boolean(workspacesUnsupportedMessage)}
-              disabledTooltip={workspacesUnsupportedMessage}
-            />
-          )}
-          <PluginPickerTrigger
-            count={selectedPlugins.length}
-            onClick={() => setIsPluginPickerOpen(true)}
-            disabled={isCreating}
           />
         </div>
 
@@ -275,7 +233,6 @@ export function HomeChatLauncher() {
             setPendingWorkspace(workspace);
             setPendingRepository(null);
             setPendingBranch(null);
-            setPendingProvider(null);
             setWorkspaceMode("local_repo");
           }}
         />
@@ -283,10 +240,9 @@ export function HomeChatLauncher() {
         <OpenRepositoryDialog
           isOpen={isDialogOpen}
           onClose={() => setIsDialogOpen(false)}
-          onConfirm={({ repository, branch, provider }) => {
+          onConfirm={({ repository, branch, provider: _provider }) => {
             setPendingRepository(repository);
             setPendingBranch(branch);
-            setPendingProvider(provider ?? repository.git_provider);
             setPendingWorkspace(null);
             setWorkspaceMode("local_repo");
           }}
