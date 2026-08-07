@@ -14,7 +14,10 @@ import { chatInputIconButtonClassName } from "#/utils/form-control-classes";
 import { useOptionalConversationId } from "#/hooks/use-conversation-id";
 import { useActiveConversation } from "#/hooks/query/use-active-conversation";
 import { useConversationNameContextMenu } from "#/hooks/use-conversation-name-context-menu";
-import { ToolsContextMenu } from "#/components/features/controls/tools-context-menu";
+import {
+  ToolsContextMenu,
+  type OperatingSystem,
+} from "#/components/features/controls/tools-context-menu";
 import { SystemMessageModal } from "#/components/features/conversation-panel/system-message-modal";
 import { SkillsModal } from "#/components/features/conversation-panel/skills-modal";
 import { PluginsModal } from "#/components/features/conversation-panel/plugins-modal";
@@ -43,6 +46,8 @@ export function ChatAddFileButton({
   const { conversationId } = useOptionalConversationId();
   const { data: conversation } = useActiveConversation();
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [operatingSystem, setOperatingSystem] =
+    React.useState<OperatingSystem>("Ubuntu");
 
   const {
     handleShowAgentTools,
@@ -137,6 +142,8 @@ export function ChatAddFileButton({
             ...action,
             onClick: () => setMenuOpen(false),
           }))}
+          operatingSystem={operatingSystem}
+          onOperatingSystemChange={setOperatingSystem}
           footerAction={{
             testId: "add-files-and-images-button",
             icon: (
