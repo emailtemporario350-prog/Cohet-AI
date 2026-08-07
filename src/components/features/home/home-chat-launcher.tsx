@@ -27,8 +27,14 @@ import { PluginPickerModal } from "#/components/features/plugins/plugin-picker-m
 import { PinnedAutomationsDashboard } from "./featured-automations/pinned-automations-dashboard";
 import { RunningAutomationsList } from "./featured-automations/running-automations-list";
 import { HomeHeaderTitle } from "./home-header/home-header-title";
+import { OpenLauncherButton } from "./open-launcher-button";
 import { OpenWorkspaceDialog } from "./open-workspace-dialog";
 import { OpenRepositoryDialog } from "./open-repository-dialog";
+import { HomeGitControlBarPreview } from "./home-git-control-bar-preview";
+import { PluginPickerTrigger } from "#/components/features/plugins/plugin-picker-trigger";
+import { useLocalWorkspaces } from "#/hooks/query/use-local-workspaces";
+import { getWorkspacesUnsupportedMessage } from "#/utils/workspaces-compatibility";
+import { Provider } from "#/types/settings";
 
 export function HomeChatLauncher() {
   const { t } = useTranslation("openhands");
@@ -42,6 +48,7 @@ export function HomeChatLauncher() {
   const [pendingRepository, setPendingRepository] =
     useState<GitRepository | null>(null);
   const [pendingBranch, setPendingBranch] = useState<Branch | null>(null);
+  const [pendingProvider, setPendingProvider] = useState<Provider | null>(null);
   const [workspaceMode, setWorkspaceMode] =
     useState<WorkspaceMode>("local_repo");
   const [selectedPlugins, setSelectedPlugins] = useState<PluginSpec[]>([]);
@@ -59,6 +66,14 @@ export function HomeChatLauncher() {
   const { images, files, imagesMarkedUploadAsFile, clearAllFiles } =
     useConversationStore();
   const { handleUpload } = useChatAttachmentUpload();
+  const { error: workspacesError } = useLocalWorkspaces({ enabled: isLocal });
+  const workspacesUnsupportedMessage = isLocal
+    ? getWorkspacesUnsupportedMessage(workspacesError, t)
+    : null;
+
+  const hasSelection = isLocal
+    ? !!pendingWorkspace
+    : !!pendingRepository && !!pendingBranch;
 
   const handleSubmit = (message: string) => {
     const trimmed = message.trim();
@@ -219,6 +234,33 @@ export function HomeChatLauncher() {
           />
         </div>
 
+        <div className="sr-only">
+          {hasSelection ? (
+            <HomeGitControlBarPreview
+              workspace={pendingWorkspace}
+              repository={pendingRepository}
+              branch={pendingBranch}
+              provider={pendingProvider}
+              workspaceMode={workspaceMode}
+              backendKind={backend.kind}
+              onRepoClick={() => setIsDialogOpen(true)}
+              onWorkspaceModeChange={setWorkspaceMode}
+            />
+          ) : (
+            <OpenLauncherButton
+              kind={isLocal ? "local" : "cloud"}
+              onClick={() => setIsDialogOpen(true)}
+              disabled={isCreating || Boolean(workspacesUnsupportedMessage)}
+              disabledTooltip={workspacesUnsupportedMessage}
+            />
+          )}
+          <PluginPickerTrigger
+            count={selectedPlugins.length}
+            onClick={() => setIsPluginPickerOpen(true)}
+            disabled={isCreating}
+          />
+        </div>
+
         <div className="mt-8 flex w-full flex-col gap-8">
           <PinnedAutomationsDashboard />
           <RunningAutomationsList />
@@ -233,6 +275,7 @@ export function HomeChatLauncher() {
             setPendingWorkspace(workspace);
             setPendingRepository(null);
             setPendingBranch(null);
+            setPendingProvider(null);
             setWorkspaceMode("local_repo");
           }}
         />
@@ -243,6 +286,7 @@ export function HomeChatLauncher() {
           onConfirm={({ repository, branch, provider: _provider }) => {
             setPendingRepository(repository);
             setPendingBranch(branch);
+            setPendingProvider(_provider ?? repository.git_provider);
             setPendingWorkspace(null);
             setWorkspaceMode("local_repo");
           }}
