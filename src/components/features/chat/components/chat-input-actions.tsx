@@ -1,13 +1,13 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { useTranslation } from "react-i18next";
-import { ChevronDown, Cpu, Folder, GitBranch } from "lucide-react";
+import { ChevronDown, Cpu, GitBranch, Monitor, Terminal } from "lucide-react";
 import { AgentStatus } from "#/components/features/controls/agent-status";
 import { ChangeAgentButton } from "../change-agent-button";
 import { ChatInputModel, ChatInputModelMenuContent } from "./chat-input-model";
 import {
-  ChatInputLlmProfilePicker,
   ChatInputLlmProfileMenuContent,
+  ChatInputLlmProfilePicker,
 } from "./chat-input-llm-profile-picker";
 import { resolvePickerKind } from "./resolve-picker-kind";
 import { ChatAddFileButton } from "../chat-add-file-button";
@@ -60,6 +60,11 @@ export function ChatInputActions({
 }: ChatInputActionsProps) {
   const { t } = useTranslation("openhands");
   const currentBranch = "main";
+  const models = ["Lite", "Swarm", "Normal", "Max", "Ultra"];
+  const localLabel = "Local";
+  const [model, setModel] = React.useState("Lite");
+  const [showModels, setShowModels] = React.useState(false);
+  const [showWorktree, setShowWorktree] = React.useState(false);
   const unifiedPauseMutation = useUnifiedPauseConversation();
   const pauseConversationMutation = usePauseConversation();
   const resumeConversationMutation = useResumeConversation();
@@ -425,107 +430,152 @@ export function ChatInputActions({
   );
 
   return (
-    <div
-      ref={actionsRowRef}
-      className="w-full min-w-0 flex items-center justify-between gap-2 border-t border-[#dedede] bg-[#ededed] px-5 py-3 text-[#202124]"
-    >
-      <div className="flex min-w-0 items-center gap-1">
-        <div className="flex min-w-0 items-center gap-3">
+    <>
+      <div
+        ref={actionsRowRef}
+        className="flex w-full min-w-0 items-center justify-between px-4 py-2"
+      >
+        <div className="sr-only">
+          {showChangeAgentButton && <ChangeAgentButton />}
+          {pickerKind === "model" ? (
+            <ChatInputModel />
+          ) : (
+            <ChatInputLlmProfilePicker />
+          )}
+        </div>
+        <div className="relative flex min-w-0 items-center gap-2">
           <div ref={addFileRef} className={cn(!showAddFileInline && "hidden")}>
             <ChatAddFileButton
               disabled={disabled}
               handleFileIconClick={onAddFileClick}
+              className="flex size-7 items-center justify-center rounded-md p-1 text-gray-500 transition-colors hover:bg-gray-100 dark:text-gray-500 dark:hover:bg-[#2a2a2a]"
               showAgentProfileSwitch={showAgentProfileSwitch}
             />
           </div>
-          {showChangeAgentButton && (
-            <div ref={codeRef} className={cn(!showCodeInline && "hidden")}>
-              <ChangeAgentButton />
-            </div>
-          )}
-          <div ref={modelRef} className={cn(!showModelInline && "hidden")}>
-            {/* Picker depends on backend + ACP context; see the `pickerKind`
-                cases above. */}
-            {pickerKind === "model" ? (
-              <ChatInputModel />
-            ) : (
-              <ChatInputLlmProfilePicker />
+          <div className="relative">
+            <button
+              type="button"
+              className="flex items-center gap-1 rounded-md px-2 py-1 font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-[#2a2a2a]"
+              aria-expanded={showModels}
+              aria-haspopup="menu"
+              onClick={() => setShowModels((open) => !open)}
+            >
+              <span>{model}</span>
+              <ChevronDown className="size-3.5 text-gray-400 dark:text-gray-500" />
+            </button>
+            {showModels && (
+              <div className="absolute left-0 top-full z-10 mt-1 w-32 rounded-xl border border-gray-200 bg-white py-1 shadow-lg dark:border-[#2a2a2a] dark:bg-[#1a1a1a] dark:shadow-2xl">
+                {models.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    className="w-full px-4 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-[#2a2a2a]"
+                    onClick={() => {
+                      setModel(option);
+                      setShowModels(false);
+                    }}
+                  >
+                    {option}
+                  </button>
+                ))}
+              </div>
             )}
           </div>
-          <button
-            type="button"
-            className="inline-flex h-6 items-center gap-1 rounded-md px-1.5 text-sm leading-5 text-[#202124] transition-colors hover:bg-black/5"
-            aria-label={t(I18nKey.COMMON$WORKSPACE_MODE_NEW_WORKTREE)}
-          >
-            <Folder className="size-4 text-[#5f6368]" strokeWidth={1.8} />
-            <span className="whitespace-nowrap">
-              {t(I18nKey.COMMON$WORKSPACE_MODE_NEW_WORKTREE)}
-            </span>
-            <ChevronDown className="size-3.5 text-[#5f6368]" strokeWidth={2} />
-          </button>
-          <button
-            type="button"
-            className="inline-flex h-6 items-center gap-1 rounded-md px-1.5 text-sm leading-5 text-[#202124] transition-colors hover:bg-black/5"
-            aria-label={`${t(I18nKey.CONVERSATION$BRANCH)}: ${currentBranch}`}
-          >
-            <GitBranch className="size-4 text-[#5f6368]" strokeWidth={1.8} />
-            <span>{currentBranch}</span>
-            <ChevronDown className="size-3.5 text-[#5f6368]" strokeWidth={2} />
-          </button>
-
-          {hasOverflowItems && (
-            <div className="relative shrink-0">
-              <button
-                ref={overflowTriggerRef}
-                type="button"
-                className={cn(chatInputIconButtonClassName, "size-6")}
-                aria-label={t(I18nKey.CHAT_INTERFACE$MORE_INPUT_ACTIONS)}
-                aria-expanded={isOverflowOpen}
-                aria-haspopup="menu"
-                onClick={(event) => {
-                  event.preventDefault();
-                  event.stopPropagation();
-                  setIsOverflowOpen((open) => !open);
-                }}
-              >
-                <ThreeDotsVerticalIcon
-                  width={16}
-                  height={16}
-                  color="currentColor"
-                />
-              </button>
-
-              {isOverflowOpen &&
-                typeof document !== "undefined" &&
-                overflowPortalStyle &&
-                ReactDOM.createPortal(
-                  <div style={overflowPortalStyle}>{overflowMenu}</div>,
-                  document.body,
-                )}
-            </div>
+        </div>
+        <div
+          ref={rightSectionRef}
+          className="ml-auto flex shrink-0 items-center gap-2"
+        >
+          {showAgentStatusInline && conversationId && (
+            <AgentStatus
+              handleStop={handlePauseAgent}
+              handleResumeAgent={handleResumeAgentClick}
+              disabled={disabled}
+              isPausing={isPausing}
+            />
+          )}
+          {showButton && (
+            <ChatSendButton
+              buttonClassName={buttonClassName}
+              handleSubmit={handleSubmit}
+              disabled={disabled || !canSubmit}
+            />
           )}
         </div>
       </div>
-      <div
-        ref={rightSectionRef}
-        className="ml-auto flex shrink-0 items-center gap-2"
-      >
-        {showAgentStatusInline && conversationId && (
-          <AgentStatus
-            handleStop={handlePauseAgent}
-            handleResumeAgent={handleResumeAgentClick}
-            disabled={disabled}
-            isPausing={isPausing}
-          />
-        )}
-        {showButton && (
-          <ChatSendButton
-            buttonClassName={buttonClassName}
-            handleSubmit={handleSubmit}
-            disabled={disabled || !canSubmit}
-          />
+
+      <div className="flex items-center gap-4 border-t border-gray-100 bg-gray-50 px-4 py-2 dark:border-[#2a2a2a] dark:bg-[#151515]">
+        <div className="relative">
+          <button
+            type="button"
+            className="flex items-center gap-1 text-sm text-gray-500 transition-colors hover:text-gray-700 dark:hover:text-gray-300"
+            aria-expanded={showWorktree}
+            aria-haspopup="menu"
+            onClick={() => setShowWorktree((open) => !open)}
+          >
+            <GitBranch className="size-3.5" />
+            <span>{t(I18nKey.COMMON$WORKSPACE_MODE_NEW_WORKTREE)}</span>
+            <ChevronDown className="size-3" />
+          </button>
+          {showWorktree && (
+            <div className="absolute bottom-full left-0 z-10 mb-2 w-40 overflow-hidden rounded-xl border border-gray-200 bg-white py-1 shadow-lg dark:border-[#2a2a2a] dark:bg-[#1a1a1a] dark:shadow-2xl">
+              <button
+                type="button"
+                className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-[#2a2a2a]"
+              >
+                <Monitor className="size-3.5" />
+                <span>{localLabel}</span>
+              </button>
+              <button
+                type="button"
+                className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-[#2a2a2a]"
+              >
+                <GitBranch className="size-3.5" />
+                <span>{t(I18nKey.COMMON$WORKSPACE_MODE_NEW_WORKTREE)}</span>
+              </button>
+            </div>
+          )}
+        </div>
+        <button
+          type="button"
+          className="flex items-center gap-1 text-sm text-gray-500 transition-colors hover:text-gray-700 dark:hover:text-gray-300"
+          aria-label={`${t(I18nKey.CONVERSATION$BRANCH)}: ${currentBranch}`}
+        >
+          <Terminal className="size-3.5" />
+          <span>{currentBranch}</span>
+          <ChevronDown className="size-3" />
+        </button>
+        {hasOverflowItems && (
+          <div className="relative ml-auto shrink-0">
+            <button
+              ref={overflowTriggerRef}
+              type="button"
+              className={cn(chatInputIconButtonClassName, "size-6")}
+              aria-label={t(I18nKey.CHAT_INTERFACE$MORE_INPUT_ACTIONS)}
+              aria-expanded={isOverflowOpen}
+              aria-haspopup="menu"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                setIsOverflowOpen((open) => !open);
+              }}
+            >
+              <ThreeDotsVerticalIcon
+                width={16}
+                height={16}
+                color="currentColor"
+              />
+            </button>
+            {isOverflowOpen &&
+              typeof document !== "undefined" &&
+              overflowPortalStyle &&
+              ReactDOM.createPortal(
+                <div style={overflowPortalStyle}>{overflowMenu}</div>,
+                document.body,
+              )}
+          </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

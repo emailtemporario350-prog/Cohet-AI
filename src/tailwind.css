@@ -327,9 +327,14 @@ button.extension-module-card-interactive {
 }
 
 .chat-input-reference-field:empty:before {
-  color: #6b6b6b;
-  font-size: 16px;
-  line-height: 20px;
+  content: "Ask anything, @ to mention, / for actions";
+  color: #9ca3af;
+  font-size: 18px;
+  line-height: 28px;
+}
+
+.dark .chat-input-reference-field:empty:before {
+  color: #6b7280;
 }
 
 .chat-input:focus {
