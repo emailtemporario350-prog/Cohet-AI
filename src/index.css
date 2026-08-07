@@ -22,6 +22,7 @@
   --bg-editor-active: var(--oh-bg-editor-active);
   --border-editor-sidebar: var(--oh-border-editor-sidebar);
   --bg-neutral-muted: var(--oh-bg-neutral-muted);
+  --cohet-accent: #E85D32;
   background-color: var(--oh-color-base) !important;
 
   /* ── Cool Grey Scale (13 shades + 2 pure anchors: white / black) ──────── */
@@ -36,7 +37,7 @@
   --cool-grey-800: #383F50;
   --cool-grey-900: #2C313F;
   --cool-grey-925: #21252F;
-  --cool-grey-950: #0B0E14; /* intentional override: preserves original app-shell depth */
+  --cool-grey-950: #0D0D0D;
   --cool-grey-975: #05070A;
   /* ─────────────────────────────────────────────────────────────────────── */
 }
