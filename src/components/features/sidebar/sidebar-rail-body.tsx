@@ -1,5 +1,12 @@
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, Plus, Settings } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ClipboardList,
+  FileStack,
+  Plus,
+  Settings,
+} from "lucide-react";
 import { OpenHandsLogoButton } from "#/components/shared/buttons/openhands-logo-button";
 import { NavigationLink } from "#/components/shared/navigation-link";
 import {
@@ -11,7 +18,6 @@ import { SidebarNavLink } from "./sidebar-nav-link";
 import { I18nKey } from "#/i18n/declaration";
 import { cn } from "#/utils/utils";
 import { StyledTooltip } from "#/components/shared/buttons/styled-tooltip";
-import { CommandMenuTrigger } from "#/components/features/command-menu/command-menu-trigger";
 import { AgentCanvasVersionTile } from "#/components/features/settings/agent-canvas-version-tile";
 import { SidebarConversationList } from "./sidebar-conversation-list";
 import AutomationsIcon from "#/icons/automations.svg?react";
@@ -29,6 +35,8 @@ import {
 const ICON_SIZE = 18;
 const SIDEBAR_LOGO_WIDTH = 34;
 const SIDEBAR_LOGO_HEIGHT = Math.round((SIDEBAR_LOGO_WIDTH * 30) / 46);
+const SIDEBAR_ARTIFACTS_LABEL = "Artifacts";
+const SIDEBAR_PLANS_LABEL = "Plans";
 
 export interface SidebarRailBodyProps {
   collapsed: boolean;
@@ -134,7 +142,6 @@ export function SidebarRailBody({
       </div>
 
       <nav className={sidebarNavListClassName(collapsed)}>
-        <CommandMenuTrigger collapsed={collapsed} />
         <SidebarNavLink
           to="/conversations"
           end
@@ -185,6 +192,20 @@ export function SidebarRailBody({
           testId="sidebar-automations-link"
           collapsed={collapsed}
           icon={<AutomationsIcon width={ICON_SIZE} height={ICON_SIZE} />}
+        />
+        <SidebarNavLink
+          to="/artifacts"
+          label={SIDEBAR_ARTIFACTS_LABEL}
+          testId="sidebar-artifacts-link"
+          collapsed={collapsed}
+          icon={<FileStack width={ICON_SIZE} height={ICON_SIZE} />}
+        />
+        <SidebarNavLink
+          to="/plans"
+          label={SIDEBAR_PLANS_LABEL}
+          testId="sidebar-plans-link"
+          collapsed={collapsed}
+          icon={<ClipboardList width={ICON_SIZE} height={ICON_SIZE} />}
         />
       </nav>
 
