@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { DragOver } from "../drag-over";
 import { UploadedFiles } from "../uploaded-files";
 import { ChatInputRow } from "./chat-input-row";
@@ -7,6 +7,8 @@ import { SlashCommandMenu } from "./slash-command-menu";
 import { useConversationStore } from "#/stores/conversation-store";
 import { cn } from "#/utils/utils";
 import { SlashCommandItem } from "#/hooks/chat/use-slash-command";
+
+const chatModes = ["Agent", "Ask"] as const;
 
 interface ChatInputContainerProps {
   chatContainerRef: React.RefObject<HTMLDivElement | null>;
@@ -62,54 +64,83 @@ export function ChatInputContainer({
   const conversationMode = useConversationStore(
     (state) => state.conversationMode,
   );
+  const [mode, setMode] = useState<"Agent" | "Ask">("Agent");
+  const placeholder =
+    mode === "Agent"
+      ? "Ask AI to build features, fix bugs, or work on your code"
+      : "Ask AI a question about your codebase";
 
   return (
-    <div
-      ref={chatContainerRef}
-      className={cn(
-        "bg-[var(--oh-surface)] box-border content-stretch flex flex-col items-start justify-center p-4 relative rounded-[15px] w-full",
-        conversationMode === "plan" && "border border-[#597FF4]",
-      )}
-      onDragOver={(e) => onDragOver(e, disabled)}
-      onDragLeave={(e) => onDragLeave(e, disabled)}
-      onDrop={(e) => onDrop(e, disabled)}
-    >
-      {/* Drag Over UI */}
-      {isDragOver && <DragOver />}
-
-      <UploadedFiles />
-
-      {/* Wrapper so the slash menu anchors just above the input row,
-          not above the entire (possibly resized) container */}
-      <div className="relative w-full">
-        {isSlashMenuOpen && onSlashSelect && (
-          <SlashCommandMenu
-            items={slashItems}
-            selectedIndex={slashSelectedIndex}
-            onSelect={onSlashSelect}
-          />
+    <>
+      <div
+        ref={chatContainerRef}
+        className={cn(
+          "chat-input-reference relative box-border flex min-h-[15vh] w-full flex-col items-start justify-between overflow-visible rounded-[20px] border border-white/[0.07] bg-[#1f1f1f] p-[14px_14px_10px] shadow-[0_16px_40px_-18px_rgba(0,0,0,0.7)] md:min-h-0",
+          conversationMode === "plan" && "border-[#597FF4]",
         )}
+        onDragOver={(e) => onDragOver(e, disabled)}
+        onDragLeave={(e) => onDragLeave(e, disabled)}
+        onDrop={(e) => onDrop(e, disabled)}
+      >
+        {/* Drag Over UI */}
+        {isDragOver && <DragOver />}
 
-        <ChatInputRow
-          chatInputRef={chatInputRef}
-          isNewConversationPending={isNewConversationPending}
-          onInput={onInput}
-          onPaste={onPaste}
-          onKeyDown={onKeyDown}
-          onFocus={onFocus}
-          onBlur={onBlur}
+        <UploadedFiles />
+
+        {/* Wrapper so the slash menu anchors just above the input row,
+          not above the entire (possibly resized) container */}
+        <div className="relative w-full p-0">
+          {isSlashMenuOpen && onSlashSelect && (
+            <SlashCommandMenu
+              items={slashItems}
+              selectedIndex={slashSelectedIndex}
+              onSelect={onSlashSelect}
+            />
+          )}
+
+          <ChatInputRow
+            chatInputRef={chatInputRef}
+            isNewConversationPending={isNewConversationPending}
+            placeholder={placeholder}
+            onInput={onInput}
+            onPaste={onPaste}
+            onKeyDown={onKeyDown}
+            onFocus={onFocus}
+            onBlur={onBlur}
+          />
+        </div>
+
+        <ChatInputActions
+          disabled={disabled}
+          canSubmit={canSubmit}
+          hasStartedConversation={hasStartedConversation}
+          onAddFileClick={() => handleFileIconClick(disabled)}
+          showButton={showButton}
+          buttonClassName={buttonClassName}
+          handleSubmit={handleSubmit}
         />
       </div>
 
-      <ChatInputActions
-        disabled={disabled}
-        canSubmit={canSubmit}
-        hasStartedConversation={hasStartedConversation}
-        onAddFileClick={() => handleFileIconClick(disabled)}
-        showButton={showButton}
-        buttonClassName={buttonClassName}
-        handleSubmit={handleSubmit}
-      />
-    </div>
+      <div className="mt-3 flex w-full justify-center">
+        <div className="flex rounded-full border border-white/[0.07] bg-[#1f1f1f] p-0.5">
+          {chatModes.map((option) => (
+            <button
+              key={option}
+              type="button"
+              className={cn(
+                "rounded-full border-0 px-4 py-1 text-[13px] font-semibold transition-colors",
+                mode === option
+                  ? "bg-[#232323] text-[#f2f2f2]"
+                  : "bg-transparent text-[#949494]",
+              )}
+              onClick={() => setMode(option)}
+              disabled={disabled}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+      </div>
+    </>
   );
 }

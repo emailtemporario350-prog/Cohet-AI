@@ -1,15 +1,23 @@
-import { useTranslation } from "react-i18next";
-import { Typography } from "#/ui/typography";
-import { I18nKey } from "#/i18n/declaration";
+const brandName = "Cohet";
+const brandLogoAlt = "Cohet logo";
 
 export function HomeHeaderTitle() {
-  const { t } = useTranslation("openhands");
-
   return (
-    <div className="flex w-full items-center justify-center py-2">
-      <Typography.H1 className="w-full text-center leading-normal">
-        {t(I18nKey.HOME$LETS_START_BUILDING)}
-      </Typography.H1>
+    <div
+      className="flex items-center justify-center gap-4 py-2 text-[#f2f2f2]"
+      aria-label={brandName}
+    >
+      <img
+        src="/cohet-logo.png"
+        alt={brandLogoAlt}
+        className="size-14 object-contain"
+      />
+      <span
+        className="text-5xl font-normal tracking-[-0.02em]"
+        style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
+      >
+        {brandName}
+      </span>
     </div>
   );
 }

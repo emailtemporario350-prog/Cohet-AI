@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Check, ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useClickOutsideElement } from "#/hooks/use-click-outside-element";
 import { useActiveConversation } from "#/hooks/query/use-active-conversation";
@@ -24,6 +25,26 @@ import { ChatInputProfileMenuContent } from "#/components/features/chat/componen
 import { ArchivedDisabledTooltip } from "../context-menu/archived-disabled-tooltip";
 import { useIsArchivedConversation } from "#/hooks/use-is-archived-conversation";
 
+export const OPERATING_SYSTEMS = ["Ubuntu", "Windows 11", "Debian"] as const;
+export type OperatingSystem = (typeof OPERATING_SYSTEMS)[number];
+
+const OPERATING_SYSTEM_LOGOS: Record<OperatingSystem, string> = {
+  Ubuntu: "/brands/ubuntu.svg",
+  "Windows 11": "/brands/windows.svg",
+  Debian: "/brands/debian.svg",
+};
+
+function OperatingSystemIcon({ name }: { name: OperatingSystem }) {
+  return (
+    <img
+      src={OPERATING_SYSTEM_LOGOS[name]}
+      alt=""
+      aria-hidden="true"
+      className="size-3.5 object-contain"
+    />
+  );
+}
+
 interface ToolsContextMenuProps {
   onClose: () => void;
   onShowSkills: (event: React.MouseEvent<HTMLButtonElement>) => void;
@@ -46,6 +67,14 @@ interface ToolsContextMenuProps {
     label: string;
     onClick: () => void;
   };
+  customActions?: Array<{
+    testId: string;
+    icon: React.ReactNode;
+    label: string;
+    onClick: () => void;
+  }>;
+  operatingSystem?: OperatingSystem;
+  onOperatingSystemChange?: (operatingSystem: OperatingSystem) => void;
 }
 
 export function ToolsContextMenu({
@@ -59,6 +88,9 @@ export function ToolsContextMenu({
   shouldShowPlugins = false,
   showAgentProfileSwitch = false,
   footerAction,
+  customActions = [],
+  operatingSystem = "Ubuntu",
+  onOperatingSystemChange,
 }: ToolsContextMenuProps) {
   const { t } = useTranslation("openhands");
   const { data: conversation } = useActiveConversation();
@@ -68,6 +100,7 @@ export function ToolsContextMenu({
   const [activeSubmenu, setActiveSubmenu] = useState<
     "git" | "macros" | "agent-profile" | null
   >(null);
+  const [operatingSystemOpen, setOperatingSystemOpen] = useState(false);
 
   const hasRepository = !!conversation?.selected_repository;
   const providersAreSet = providers.length > 0;
@@ -93,7 +126,7 @@ export function ToolsContextMenu({
       testId="tools-context-menu"
       position="top"
       alignment="left"
-      className="left-[-16px] mb-2 bottom-full overflow-visible min-w-[200px]"
+      className="left-[-10px] bottom-full mb-2 min-w-[185px] overflow-visible border-white/[0.1] bg-[#141414]/90 p-0.5 text-[11px] shadow-[0_18px_50px_-16px_rgba(0,0,0,0.85)] backdrop-blur-xl [&>button]:gap-1.5 [&>button]:px-1.5 [&>button]:py-1 [&>button]:text-[11px] [&>button]:leading-4 [&_.text-sm]:text-[11px] [&_.text-sm]:leading-4 [&_svg]:size-3"
     >
       {/* Switch agent profile — only while starting a new conversation; the
           profile is locked once the conversation starts (OSS-5735). Selecting
@@ -195,6 +228,54 @@ export function ToolsContextMenu({
             )}
           >
             <MacrosSubmenu onClose={handleClose} />
+          </div>
+        )}
+      </div>
+
+      {customActions.length > 0 && <Divider inset="menu" />}
+      {customActions.map((action) => (
+        <ContextMenuListItem
+          key={action.testId}
+          testId={action.testId}
+          onClick={action.onClick}
+        >
+          <ToolsContextMenuIconText icon={action.icon} text={action.label} />
+        </ContextMenuListItem>
+      ))}
+
+      <Divider inset="menu" />
+      <div className="relative">
+        <ContextMenuListItem
+          testId="operating-system-menu-button"
+          onClick={() => setOperatingSystemOpen((open) => !open)}
+        >
+          <ToolsContextMenuIconText
+            icon={<OperatingSystemIcon name={operatingSystem} />}
+            text={operatingSystem}
+            rightIcon={<ChevronDown size={12} strokeWidth={1.5} />}
+          />
+        </ContextMenuListItem>
+        {operatingSystemOpen && (
+          <div className="mx-1 mb-1 rounded-md border border-white/[0.08] bg-black/20 p-0.5">
+            {OPERATING_SYSTEMS.map((option) => (
+              <button
+                key={option}
+                type="button"
+                className="flex w-full items-center justify-between gap-2 rounded px-1.5 py-1 text-left text-[11px] text-[#b8b8b8] transition-colors hover:bg-white/[0.06] hover:text-white"
+                onClick={() => {
+                  onOperatingSystemChange?.(option);
+                  setOperatingSystemOpen(false);
+                }}
+              >
+                <span className="flex items-center gap-1.5">
+                  <OperatingSystemIcon name={option} />
+                  {option}
+                </span>
+                {operatingSystem === option && (
+                  <Check size={11} className="text-[#949494]" />
+                )}
+              </button>
+            ))}
           </div>
         )}
       </div>

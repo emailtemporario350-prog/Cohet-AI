@@ -1,5 +1,12 @@
 import React from "react";
-import { Paperclip, Plus } from "lucide-react";
+import {
+  FileCode2,
+  FolderGit2,
+  KeyRound,
+  Paperclip,
+  Plus,
+  Workflow,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { I18nKey } from "#/i18n/declaration";
 import { cn } from "#/utils/utils";
@@ -7,7 +14,10 @@ import { chatInputIconButtonClassName } from "#/utils/form-control-classes";
 import { useOptionalConversationId } from "#/hooks/use-conversation-id";
 import { useActiveConversation } from "#/hooks/query/use-active-conversation";
 import { useConversationNameContextMenu } from "#/hooks/use-conversation-name-context-menu";
-import { ToolsContextMenu } from "#/components/features/controls/tools-context-menu";
+import {
+  ToolsContextMenu,
+  type OperatingSystem,
+} from "#/components/features/controls/tools-context-menu";
 import { SystemMessageModal } from "#/components/features/conversation-panel/system-message-modal";
 import { SkillsModal } from "#/components/features/conversation-panel/skills-modal";
 import { PluginsModal } from "#/components/features/conversation-panel/plugins-modal";
@@ -16,6 +26,7 @@ import { HooksModal } from "#/components/features/conversation-panel/hooks-modal
 export interface ChatAddFileButtonProps {
   handleFileIconClick: () => void;
   disabled?: boolean;
+  className?: string;
   /**
    * Offer the "Switch agent profile" submenu. Computed by ChatInputActions:
    * only while starting a new conversation (home or a blank conversation) and
@@ -28,12 +39,15 @@ export interface ChatAddFileButtonProps {
 export function ChatAddFileButton({
   handleFileIconClick,
   disabled = false,
+  className,
   showAgentProfileSwitch = false,
 }: ChatAddFileButtonProps) {
   const { t } = useTranslation("openhands");
   const { conversationId } = useOptionalConversationId();
   const { data: conversation } = useActiveConversation();
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [operatingSystem, setOperatingSystem] =
+    React.useState<OperatingSystem>("Ubuntu");
 
   const {
     handleShowAgentTools,
@@ -66,13 +80,36 @@ export function ChatAddFileButton({
     setMenuOpen((open) => !open);
   };
 
+  const customActions = [
+    {
+      testId: "workspace-browser-menu-button",
+      icon: <FolderGit2 className="size-3.5" aria-hidden />,
+      label: "Workspace browser",
+    },
+    {
+      testId: "project-files-menu-button",
+      icon: <FileCode2 className="size-3.5" aria-hidden />,
+      label: "Project files",
+    },
+    {
+      testId: "automation-recipes-menu-button",
+      icon: <Workflow className="size-3.5" aria-hidden />,
+      label: "Automation recipes",
+    },
+    {
+      testId: "environment-variables-menu-button",
+      icon: <KeyRound className="size-3.5" aria-hidden />,
+      label: "Environment variables",
+    },
+  ];
+
   return (
     <div className="relative">
       <button
         type="button"
         className={cn(
-          chatInputIconButtonClassName,
-          "relative shrink-0 size-6",
+          className ?? chatInputIconButtonClassName,
+          "relative shrink-0",
           disabled
             ? "cursor-not-allowed text-[var(--oh-text-subtle)]"
             : undefined,
@@ -86,7 +123,7 @@ export function ChatAddFileButton({
         disabled={disabled}
       >
         <span className="flex h-full w-full items-center justify-center">
-          <Plus className="h-[13px] w-[13px] shrink-0" strokeWidth={2} />
+          <Plus className="h-[21px] w-[21px] shrink-0" strokeWidth={1.1} />
         </span>
       </button>
 
@@ -101,6 +138,12 @@ export function ChatAddFileButton({
           shouldShowAgentTools={shouldShowAgentTools}
           shouldShowHooks={shouldShowHooks}
           shouldShowPlugins={shouldShowPlugins}
+          customActions={customActions.map((action) => ({
+            ...action,
+            onClick: () => setMenuOpen(false),
+          }))}
+          operatingSystem={operatingSystem}
+          onOperatingSystemChange={setOperatingSystem}
           footerAction={{
             testId: "add-files-and-images-button",
             icon: (
@@ -110,7 +153,7 @@ export function ChatAddFileButton({
                 aria-hidden
               />
             ),
-            label: t(I18nKey.CHAT_INTERFACE$ADD_FILES_AND_IMAGES),
+            label: "Upload attachment",
             onClick: handleFileIconClick,
           }}
         />
