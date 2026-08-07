@@ -79,27 +79,27 @@ export function ChatAddFileButton({
   const customActions = [
     {
       testId: "repositories-menu-button",
-      icon: <FolderGit2 className="size-4" aria-hidden />,
+      icon: <FolderGit2 className="size-3.5" aria-hidden />,
       label: "Repositories",
     },
     {
       testId: "codebase-files-menu-button",
-      icon: <FileCode2 className="size-4" aria-hidden />,
+      icon: <FileCode2 className="size-3.5" aria-hidden />,
       label: "Codebase files",
     },
     {
       testId: "devin-sessions-menu-button",
-      icon: <Users className="size-4" aria-hidden />,
+      icon: <Users className="size-3.5" aria-hidden />,
       label: "Devin sessions",
     },
     {
       testId: "playbooks-menu-button",
-      icon: <BookOpen className="size-4" aria-hidden />,
+      icon: <BookOpen className="size-3.5" aria-hidden />,
       label: "Playbooks",
     },
     {
       testId: "secrets-menu-button",
-      icon: <KeyRound className="size-4" aria-hidden />,
+      icon: <KeyRound className="size-3.5" aria-hidden />,
       label: "Secrets",
     },
   ];
