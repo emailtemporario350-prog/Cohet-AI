@@ -67,7 +67,7 @@ export function ChatInputContainer({
     <div
       ref={chatContainerRef}
       className={cn(
-        "chat-input-reference box-border content-stretch flex w-full flex-col items-start justify-center overflow-hidden relative rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-[#2a2a2a] dark:bg-[#1a1a1a] dark:shadow-xl",
+        "chat-input-reference relative box-border flex w-full flex-col items-start justify-center overflow-hidden rounded-3xl border border-input bg-popover p-0 pt-1 shadow-xs",
         conversationMode === "plan" && "border-[#597FF4]",
       )}
       onDragOver={(e) => onDragOver(e, disabled)}
@@ -81,7 +81,7 @@ export function ChatInputContainer({
 
       {/* Wrapper so the slash menu anchors just above the input row,
           not above the entire (possibly resized) container */}
-      <div className="relative w-full p-4 pb-2">
+      <div className="relative w-full p-0">
         {isSlashMenuOpen && onSlashSelect && (
           <SlashCommandMenu
             items={slashItems}

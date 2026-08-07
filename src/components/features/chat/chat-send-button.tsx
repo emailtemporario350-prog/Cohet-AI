@@ -1,4 +1,4 @@
-import { Mic } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import { cn } from "#/utils/utils";
 
 export interface ChatSendButtonProps {
@@ -16,7 +16,7 @@ export function ChatSendButton({
     <button
       type="button"
       className={cn(
-        "flex size-9 items-center justify-center rounded-full border-0 bg-gray-100 p-2 text-gray-500 transition-colors hover:bg-gray-200 dark:bg-[#2a2a2a] dark:text-gray-400 dark:hover:bg-[#333]",
+        "flex size-9 items-center justify-center rounded-full border-0 bg-primary p-2 text-primary-foreground transition-colors hover:bg-primary/90",
         disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
         buttonClassName,
       )}
@@ -25,7 +25,7 @@ export function ChatSendButton({
       onClick={handleSubmit}
       disabled={disabled}
     >
-      <Mic className="size-[18px]" strokeWidth={2} />
+      <ArrowUp className="size-[18px]" strokeWidth={2} />
     </button>
   );
 }

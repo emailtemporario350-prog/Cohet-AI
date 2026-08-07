@@ -21,7 +21,7 @@ export function ChatInputRow({
   onBlur,
 }: ChatInputRowProps) {
   return (
-    <div className="box-border content-stretch flex min-h-[56px] flex-row items-start justify-between gap-2 p-0 relative shrink-0 w-full">
+    <div className="box-border content-stretch flex min-h-[44px] flex-row items-start justify-between gap-2 p-0 relative shrink-0 w-full">
       <div className="basis-0 box-border content-stretch flex flex-row gap-4 grow items-end justify-start min-h-px min-w-px p-0 relative shrink-0">
         <ChatInputField
           chatInputRef={chatInputRef}
